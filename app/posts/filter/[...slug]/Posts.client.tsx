@@ -33,6 +33,7 @@ export default function PostsClient({ userId }: PostsClientProps) {
         ...(userId !== 'All' && { userId }),
       }),
     placeholderData: keepPreviousData,
+    refetchOnMount: false,
   });
 
   const toggleModal = () => setIsModalOpen((prev) => !prev);
@@ -47,13 +48,13 @@ export default function PostsClient({ userId }: PostsClientProps) {
     setSearchQuery(newQuery);
   }, 300);
 
-  const totalPages = Math.ceil(data.totalCount / 8);
+  const totalPages = data?.totalCount ? Math.ceil(data.totalCount / 8) : 0;
   const posts = data?.posts ?? [];
 
   return (
     <div className={css.app}>
-      <main className={css.main}>
-        <section className={css.postsSection}>
+      <section className={css.main}>
+        <div className={css.postsSection}>
           <header className={css.toolbar}>
             <SearchBox onSearch={changeSearchQuery} />
             {totalPages > 1 && (
@@ -91,8 +92,8 @@ export default function PostsClient({ userId }: PostsClientProps) {
           {posts.length > 0 && (
             <PostList posts={posts} toggleModal={toggleModal} toggleEditPost={toggleEditPost} />
           )}
-        </section>
-      </main>
+        </div>
+      </section>
     </div>
   );
 }
